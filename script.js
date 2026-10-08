@@ -1,6 +1,7 @@
 // State management
 let currentMode = 'quiz';
 let currentQuizIndex = 0;
+let activeQuestions = [];
 let quizScore = 0;
 let currentFlashcardIndex = 0;
 let isFlipped = false;
@@ -18,6 +19,7 @@ const feedback = document.getElementById('feedback');
 const nextBtn = document.getElementById('next-button');
 const currentQNum = document.getElementById('current-question-num');
 const progressBar = document.getElementById('progress');
+const totalQNum = document.getElementById('total-questions');
 
 const cardFront = document.getElementById('card-front');
 const cardBack = document.getElementById('card-back');
@@ -31,23 +33,39 @@ const scoreText = document.getElementById('score-text');
 const restartBtn = document.getElementById('restart-btn');
 
 // Initialize Quiz
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
 function initQuiz() {
     currentQuizIndex = 0;
     quizScore = 0;
+    // Fragen mischen, Antworten pro Frage mischen
+    activeQuestions = shuffle(quizQuestions).map(q => {
+        const correctText = q.options[q.correct];
+        const options = shuffle(q.options);
+        return { question: q.question, options, correct: options.indexOf(correctText) };
+    });
+    totalQNum.innerText = activeQuestions.length;
     showQuiz();
 }
 
 function showQuiz() {
-    if (currentQuizIndex >= quizQuestions.length) {
+    if (currentQuizIndex >= activeQuestions.length) {
         showResults();
         return;
     }
     
-    const q = quizQuestions[currentQuizIndex];
+    const q = activeQuestions[currentQuizIndex];
     questionText.innerText = q.question;
     currentQNum.innerText = currentQuizIndex + 1;
     
-    const progress = ((currentQuizIndex) / quizQuestions.length) * 100;
+    const progress = ((currentQuizIndex) / activeQuestions.length) * 100;
     progressBar.style.width = `${progress}%`;
     
     optionsContainer.innerHTML = '';
@@ -64,7 +82,7 @@ function showQuiz() {
 }
 
 function checkAnswer(index, btn) {
-    const q = quizQuestions[currentQuizIndex];
+    const q = activeQuestions[currentQuizIndex];
     const allButtons = optionsContainer.querySelectorAll('.option-btn');
     
     allButtons.forEach(b => b.disabled = true);
@@ -89,7 +107,7 @@ function checkAnswer(index, btn) {
 function showResults() {
     quizSection.classList.add('hidden');
     resultScreen.classList.remove('hidden');
-    scoreText.innerText = `Du hast ${quizScore} von ${quizQuestions.length} Fragen richtig beantwortet.`;
+    scoreText.innerText = `Du hast ${quizScore} von ${activeQuestions.length} Fragen richtig beantwortet.`;
 }
 
 // Flashcard Logic
@@ -149,7 +167,9 @@ nextCardBtn.onclick = () => {
 };
 
 restartBtn.onclick = () => {
-    showQuiz();
+    resultScreen.classList.add('hidden');
+    quizSection.classList.remove('hidden');
+    initQuiz();
 };
 
 // Initial Load
