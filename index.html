@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stilmittel Lernen</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Stilmittel Lernen</h1>
+            <nav>
+                <button id="mode-quiz" class="active">Quiz-Modus</button>
+                <button id="mode-flashcards">Karteikarten</button>
+            </nav>
+        </header>
+
+        <main id="content">
+            <!-- Quiz Content -->
+            <section id="quiz-section">
+                <div id="quiz-header">
+                    <p>Frage <span id="current-question-num">1</span> von 50</p>
+                    <div class="progress-bar"><div id="progress"></div></div>
+                </div>
+                <div id="question-container">
+                    <p id="question-text">Lade Frage...</p>
+                    <div id="options-container"></div>
+                </div>
+                <div id="feedback" class="hidden"></div>
+                <button id="next-button" class="hidden">Nächste Frage</button>
+            </section>
+
+            <!-- Flashcard Content -->
+            <section id="flashcard-section" class="hidden">
+                <div class="card-container">
+                    <div class="card" id="flashcard">
+                        <div class="card-front" id="card-front">
+                            <h2 id="card-term">Lade Begriff...</h2>
+                        </div>
+                        <div class="card-back" id="card-back">
+                            <p id="card-definition">Lade Definition...</p>
+                        </div>
+                    </div>
+                    <div class="card-controls">
+                        <button id="flip-card">Umdrehen</button>
+                        <button id="prev-card">Zurück</button>
+                        <button id="next-card">Weiter</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Screen -->
+            <section id="result-screen" class="hidden">
+                <h2>Ergebnis</h2>
+                <p id="score-text"></p>
+                <button id="restart-btn">Noch einmal</button>
+            </section>
+        </main>
+    </div>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
